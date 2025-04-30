@@ -1,0 +1,3 @@
+[submodule "vendor/libsndfile"]
+	path = vendor/libsndfile
+	url = https://github.com/libsndfile/libsndfile
