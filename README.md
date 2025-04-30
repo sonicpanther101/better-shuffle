@@ -1,5 +1,6 @@
 # better-shuffle
 
+This is a [C++](https://en.wikipedia.org/wiki/C%2B%2B) project that uses [QT](https://www.qt.io) and compiles to [web assembly](https://webassembly.org) using [emscripten](https://emscripten.org)
 This is a project to (Oli pls fill in the rest Mr Wordsmith)
 
 ## Data collected from songs
