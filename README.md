@@ -1,5 +1,7 @@
 # better-shuffle
 
+This is a project to (Oli pls fill in the rest Mr Wordsmith)
+
 ## Data collected from songs
 - [x] Year released
 - [ ] Key
