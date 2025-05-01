@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.30)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(better-shuffle)
 
 macro(print_all_variables)
@@ -11,7 +14,7 @@ endforeach()
 message(STATUS "print_all_variables------------------------------------------}")
 endmacro()
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# Add the libsndfile cmake module
 
 file(GLOB SOURCES "src/*.cpp" "src/*.h")
 
@@ -21,7 +24,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME})
 
 # Link the headers
-target_include_directories(${PROJECT_NAME} PUBLIC)
+target_include_directories(${PROJECT_NAME} PUBLIC )
 
 
 # print_all_variables()
