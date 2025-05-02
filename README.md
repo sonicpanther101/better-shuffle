@@ -6,9 +6,12 @@ This music player is both efficient and powerful, developed in [C++](https://en.
 
 The WebAssembly backend will also be able to integrate with other WebAssembly custom-made modules, making plugins and custom components easy to make whilst ensuring safety.
 
+## Don't have your playlist in files
+
+We have a solution, use the [SLSK Batch Download](https://github.com/fiso64/slsk-batchdl) downloader to download your playlist locally.
 
 ## Libraries used
-[libsndfile](https://github.com/libsndfile/libsndfile)
+
 
 Roadmap: [HNSWLIB](https://github.com/nmslib/hnswlib), [SableUI](https://github.com/oliwilliams1/SableUI), [emscripten](https://emscripten.org)
 
@@ -35,7 +38,7 @@ Roadmap: [HNSWLIB](https://github.com/nmslib/hnswlib), [SableUI](https://github.
 - [ ] Analised timbre
 
 ## Vector Database
-Better Shuffle uses [HNSWLIB](https://github.com/nmslib/hnswlib/blob/master/examples/cpp/EXAMPLES.md) as its vector database using (insert number of dimensions here) to analyze your songs and to find the most similar songs to play next.
+Better Shuffle uses [HNSWLIB](https://github.com/nmslib/hnswlib/blob/master/examples/cpp/EXAMPLES.md) as its vector database using 13 dimensions to analyze your songs and to find the most similar songs to play next.
 
 ## Building from Source
 Ensure you have CMake installed on your machine with a C++ compiler like MSVC for windows, gcc for Linux, MacOS.
