@@ -13,20 +13,25 @@ The WebAssembly backend will also be able to integrate with other WebAssembly cu
 Roadmap: [HNSWLIB](https://github.com/nmslib/hnswlib), [SableUI](https://github.com/oliwilliams1/SableUI), [emscripten](https://emscripten.org)
 
 ## Current data collected from songs
+### From Metadata
 - [x] Year released
-- [ ] Key
-- [x] BPM/Tempo https://getsongbpm.com/api
+- [x] Song length
+### From [Choisic](https://www.chosic.com)
+- [x] Popularity
+- [x] Genres
+- [x] Key
+- [x] BPM
+- [x] Happiness
+- [x] Dancability
+- [x] Energy
+- [x] Acousticness
+- [x] Instrumentalness
+- [x] Liveness
+- [x] Speechiness
+- [x] Loudness
+### Others to consider
 - [ ] Valence
 - [ ] Arousal
-- [ ] Popularity
-- [ ] Happiness
-- [ ] Dancability
-- [ ] Energy
-- [ ] Acousticness
-- [ ] Instrumentalness
-- [ ] Liveness
-- [ ] Speechiness
-- [x] Song length
 - [ ] Analised timbre
 
 ## Vector Database
