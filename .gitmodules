@@ -1,0 +1,3 @@
+[submodule "vendor/hnswlib"]
+	path = vendor/hnswlib
+	url = https://github.com/nmslib/hnswlib
