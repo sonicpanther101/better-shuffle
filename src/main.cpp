@@ -4,6 +4,7 @@
 #include <cstring>
 #include <filesystem>
 #include <set>
+#include <iomanip>
 
 // #include "metadata.h"
 #include "hnswlib_csv_to_db.h"
@@ -29,35 +30,18 @@ int main() {
             db.save_db_to_file(base_path);
         }
         
-        // Example search (using dummy query)
-
-        // Popularity
-        // BPM
-        // Dance
-        // Energy
-        // Acoustic
-        // Instrumental
-        // Happy
-        // Speech
-        // Live
-        // Loud
+        // Example search
 
         std::string song_name = "Porcelain";
 
-        try {
-            auto vec = db.get_vector_by_song_name(song_name);
-            std::cout << "\nVector for song \"" << song_name << "\":" << std::endl;
-            for (float val : vec) {
-                std::cout << val << ", ";
-            }
-            std::cout << std::endl;
-        } catch (const std::exception& e) {
-            std::cerr << "Reverse search error: " << e.what() << std::endl;
-        }
+        auto vec = db.get_vector_by_song_name(song_name);
+        std::cout << "\nFound vector for song \"" << song_name << "\"!\n" << std::endl;
 
-        HNSWVectorDB tempDB = db;
-        std::vector<float> query = {0.251997, 0.622581, 0.444701, 0.271762, 0.227291, 0, 0.474347, 0, 0, -0.0247056};
+        std::vector<float> query = vec;
         std::set<size_t> removed_ids;
+
+        std::printf("%-45s%-30s%-40s%-5s\n", "Song", "Artist", "Album", "Distance");
+        std::printf("---------------------------------------------------------------------------------------------------------------------------\n");
 
         for (int i = 0; i < 10; ++i) {
             // Search for k+N results to account for already "removed" items
@@ -84,10 +68,7 @@ int main() {
                 db.remove(query); // Mark for deletion in HNSW (soft delete)
                 removed_ids.insert(id_to_remove); // Keep track of it in our set
 
-                std::cout << "Song: " << metadata["Song"]
-                          << ", Artist: " << metadata["Artist"]
-                          << ", Album: " << metadata["Album"]
-                          << ", Distance: " << distance << "\n";
+                std::printf("%-45s%-30s%-40s%-5f\n", metadata["Song"].c_str(), metadata["Artist"].c_str(), metadata["Album"].c_str(), distance);
                 
                 // Update query to the vector of the just-"removed" item for the next iteration's search
                 query = db.vector_from_metadata(metadata);
