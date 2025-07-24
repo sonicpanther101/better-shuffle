@@ -18,13 +18,13 @@ private:
     std::vector<float> data_buffer;
     bool index_loaded = false;
 
-    // Smaller = more important
+    // Smaller = more important, 0 = no weight
     float WEIGHTS[10] = {
         0.0f, // Popularity
         0.0f, // BPM
         0.0f, // Dance
-        0.0f, // Energy
-        0.0f, // Acoustic
+        1.0f, // Energy
+        1.0f, // Acoustic
         0.0f, // Instrumental
         1.0f, // Happy
         0.0f, // Speech
