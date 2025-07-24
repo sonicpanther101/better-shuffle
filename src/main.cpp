@@ -6,6 +6,19 @@
 #include <set>
 #include <iomanip>
 
+// db vector dimensions
+
+// popularity
+// BPM
+// dancea
+// energy
+// acoustic
+// instrumental
+// happy
+// speech
+// live
+// loud
+
 // #include "metadata.h"
 #include "hnswlib_csv_to_db.h"
 
@@ -79,6 +92,28 @@ int main() {
         }
 
         std::cout << "\n";
+
+        std::string album_name = "A/B";
+        std::string artist_name = "blink-182";
+
+        auto vector = db.get_songs_by_artist_name(artist_name);
+        // auto vector = db.get_songs_by_album_name(album_name);
+
+        std::cout << "\nSongs from \"" << artist_name << "\":\n" << std::endl;
+        // std::cout << "\nSongs from \"" << album_name << "\":\n" << std::endl;
+
+        for (const auto& song : vector) {
+            std::cout << song << std::endl;
+        }
+
+        std::vector<float> average_vector = db.get_average_vector_from_songs(vector);
+
+        std::cout << "\nAverage vector for songs:\n" << std::endl;
+
+        for (size_t i = 0; i < average_vector.size(); ++i) {
+            std::cout << std::fixed << std::setprecision(6) << average_vector[i] << " ";
+        }
+        std::cout << std::endl;
         
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../vendor/hnswlib/hnswlib/hnswlib.h"
+#include <cstddef>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -16,6 +17,20 @@ private:
     std::vector<std::unordered_map<std::string, std::string>> metadata;
     std::vector<float> data_buffer;
     bool index_loaded = false;
+
+    // Smaller = more important
+    float WEIGHTS[10] = {
+        0.0f, // Popularity
+        0.0f, // BPM
+        0.0f, // Dance
+        0.0f, // Energy
+        0.0f, // Acoustic
+        0.0f, // Instrumental
+        1.0f, // Happy
+        0.0f, // Speech
+        0.0f, // Live
+        0.0f // Loud (Db)
+    };
 
     // Helper: trim whitespace
     static std::string trim(const std::string& str) {
@@ -68,8 +83,8 @@ private:
     // Helper function to normalize features
     void normalize_features(std::vector<float>& features) {
         float norm = 0.0f;
-        for (float val : features) {
-            norm += val * val;
+        for (size_t i = 0; i < features.size(); i++) {
+            norm += features[i] * features[i] * WEIGHTS[i];
         }
         norm = std::sqrt(norm);
         if (norm > 0) {
@@ -328,5 +343,55 @@ public:
             }
         }
         throw std::runtime_error("Song not found: " + song_name);
+    }
+
+    std::vector<std::string> get_songs_by_artist_name(const std::string& artist_name) {
+        std::vector<std::string> songs;
+        for (const auto& meta : metadata) {
+            if (meta.count("Artist") && meta.at("Artist") == artist_name) {
+                if (meta.count("Song")) {
+                    songs.push_back(meta.at("Song"));
+                }
+            }
+        }
+        return songs;
+    }
+
+    std::vector<std::string> get_songs_by_album_name(const std::string& album_name) {
+        std::vector<std::string> songs;
+        for (const auto& meta : metadata) {
+            if (meta.count("Album") && meta.at("Album") == album_name) {
+                if (meta.count("Song")) {
+                    songs.push_back(meta.at("Song"));
+                }
+            }
+        }
+        return songs;
+    }
+
+    std::vector<std::string> get_songs_by_genre_name(const std::string& genre_name) {
+        std::vector<std::string> songs;
+        for (const auto& meta : metadata) {
+            if (meta.count("Genre") && meta.at("Genre") == genre_name) {
+                if (meta.count("Song")) {
+                    songs.push_back(meta.at("Song"));
+                }
+            }
+        }
+        return songs;
+    }
+
+    std::vector<float> get_average_vector_from_songs(const std::vector<std::string>& song_names) {
+        std::vector<float> average_vector(dim, 0.0f);
+        for (const auto& song_name : song_names) {
+            auto song_vector = get_vector_by_song_name(song_name);
+            for (size_t i = 0; i < dim; ++i) {
+                average_vector[i] += song_vector[i];
+            }
+        }
+        for (size_t i = 0; i < dim; ++i) {
+            average_vector[i] /= song_names.size();
+        }
+        return average_vector;
     }
 };
