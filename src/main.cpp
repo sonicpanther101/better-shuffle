@@ -35,61 +35,28 @@ int main() {
         HNSWVectorDB db(10); // Using 10 dimensions
 
         // check if db is saved locally
-        // if (std::filesystem::exists(base_path + ".index") && 
-        //     std::filesystem::exists(base_path + ".data")) {
-        //     db.load_db_from_file(base_path);
-        // } else {
+        if (std::filesystem::exists(base_path + ".index") && 
+            std::filesystem::exists(base_path + ".data")) {
+            db.load_db_from_file(base_path);
+        } else {
             db.load_from_csv(csv_path);
             db.save_db_to_file(base_path);
-        // }
-        
-        // Example search
-
-        std::string song_name = "Long Drives";
-
-        auto vec = db.get_vector_by_song_name(song_name);
-        std::cout << "\nFound vector for song \"" << song_name << "\"!\n" << std::endl;
-
-        std::vector<float> query = vec;
-        std::set<size_t> removed_ids;
-
-        std::printf("%-45s%-45s%-45s%-5s\n", "Song", "Artist", "Album", "Distance");
-        std::printf("---------------------------------------------------------------------------------------------------------------------------\n");
-
-        for (int i = 0; i < 10; ++i) {
-            // Search for k+N results to account for already "removed" items
-            size_t k_search = 5; // Search for more results than needed
-            std::vector<std::pair<size_t, float>> search_results = db.search(query, k_search + removed_ids.size()); 
-            
-            size_t id_to_remove = -1;
-            std::unordered_map<std::string, std::string> metadata;
-            float distance = 0.0f;
-            bool found_new_item = false;
-
-            // Iterate through search results to find the first one that hasn't been "removed" yet
-            for (const auto& result : search_results) {
-                if (removed_ids.find(result.first) == removed_ids.end()) {
-                    id_to_remove = result.first;
-                    distance = result.second;
-                    metadata = db.get_metadata(id_to_remove);
-                    found_new_item = true;
-                    break; 
-                }
-            }
-
-            if (found_new_item) {
-                db.remove(query); // Mark for deletion in HNSW (soft delete)
-                removed_ids.insert(id_to_remove); // Keep track of it in our set
-
-                std::printf("%-45s%-45s%-45s%-5f\n", metadata["Song"].c_str(), metadata["Artist"].c_str(), metadata["Album"].c_str(), distance);
-                
-                // Update query to the vector of the just-"removed" item for the next iteration's search
-                query = db.vector_from_metadata(metadata);
-            } else {
-                std::cout << "No new unique items found to remove in this iteration." << std::endl;
-                break; // Exit loop if no new items can be found
-            }
         }
+        
+        std::vector<float> weights = {
+            0.0f, // Popularity - ignore completely
+            0.15f, // BPM - important for rhythm
+            0.1f,  // Dance - very important
+            0.1f,  // Energy - very important
+            0.05f, // Acoustic - extremely important
+            0.2f,  // Instrumental - moderate importance
+            0.1f,  // Happy - very important
+            0.0f,  // Speech - ignore
+            0.0f,  // Live - ignore
+            0.15f  // Loud (Db) - important
+        };
+
+        db.test_weights(weights, "Rude", csv_path);
 
         std::cout << std::endl;
         

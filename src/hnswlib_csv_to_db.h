@@ -20,16 +20,16 @@ private:
 
     // Smaller = more important, 0 = no weight
     float WEIGHTS[10] = {
-        0.0f, // Popularity - ignore
-        0.2f, // BPM - important for rhythm matching
-        0.1f, // Dance - very important
-        0.1f, // Energy - very important
+        9.9f, // Popularity - some importance for mainstream appeal
+        0.0f, // BPM - ignore tempo
+        0.3f, // Dance - moderate importance
+        0.2f, // Energy - high importance for mood
         0.1f, // Acoustic - very important for texture
-        0.3f, // Instrumental - moderate importance
-        0.1f, // Happy - very important
+        0.0f, // Instrumental - ignore
+        0.1f, // Happy - very important for mood
         0.0f, // Speech - ignore
         0.0f, // Live - ignore
-        0.2f  // Loud (Db) - important for intensity
+        0.4f  // Loud (Db) - moderate importance
     };
 
     // Helper: trim whitespace
@@ -393,5 +393,38 @@ public:
             average_vector[i] /= song_names.size();
         }
         return average_vector;
+    }
+
+    void test_weights(const std::vector<float>& test_weights, const std::string& test_song, const std::string& csv_path) {
+        // Temporarily set weights
+        std::copy(test_weights.begin(), test_weights.end(), WEIGHTS);
+        
+        // Rebuild the database with new weights
+        load_from_csv(csv_path);
+        
+        // Test recommendations for the song
+        auto vec = get_vector_by_song_name(test_song);
+        std::cout << "\nFound vector for song \"" << test_song << "\"!" << std::endl;
+        auto results = search(vec, 11);
+        results.pop_back();
+        
+        // Print results for manual evaluation
+        std::cout << "Weights: ";
+        for (float w : test_weights) std::cout << w << " ";
+        std::cout << std::endl;
+        
+        // Print recommended songs...
+        std::printf("%-40s%-40s%-40s%-5s\n", "Song", "Artist", "Album", "Distance");
+        std::printf("---------------------------------------------------------------------------------------------------------------------------\n");
+
+        for (const auto& result : results) {
+            std::unordered_map<std::string, std::string> metadata = get_metadata(result.first);
+            std::printf("%-40.40s%-40.40s%-40.40s%-5.2f\n", 
+                metadata["Song"].substr(0, 40).c_str(), 
+                metadata["Artist"].substr(0, 40).c_str(), 
+                metadata["Album"].substr(0, 40).c_str(), 
+                result.second
+            );
+        }
     }
 };

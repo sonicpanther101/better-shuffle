@@ -19,7 +19,7 @@ Mood-Based Weighting
 Focus on emotional characteristics
 consistent, but focuses on popularity too much
 float WEIGHTS[10] = {
-    0.5f, // Popularity - some importance for mainstream appeal
+    0.5f, // Popularity - some importance for mainstream appeal - to make this better, use 9.9
     0.0f, // BPM - ignore tempo
     0.3f, // Dance - moderate importance
     0.2f, // Energy - high importance for mood
