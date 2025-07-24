@@ -20,16 +20,16 @@ private:
 
     // Smaller = more important, 0 = no weight
     float WEIGHTS[10] = {
-        0.0f, // Popularity
-        0.0f, // BPM
-        0.0f, // Dance
-        1.0f, // Energy
-        1.0f, // Acoustic
-        0.0f, // Instrumental
-        1.0f, // Happy
-        0.0f, // Speech
-        0.0f, // Live
-        0.0f // Loud (Db)
+        0.0f, // Popularity - ignore
+        0.2f, // BPM - important for rhythm matching
+        0.1f, // Dance - very important
+        0.1f, // Energy - very important
+        0.1f, // Acoustic - very important for texture
+        0.3f, // Instrumental - moderate importance
+        0.1f, // Happy - very important
+        0.0f, // Speech - ignore
+        0.0f, // Live - ignore
+        0.2f  // Loud (Db) - important for intensity
     };
 
     // Helper: trim whitespace

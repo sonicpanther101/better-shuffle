@@ -27,7 +27,7 @@ int main() {
     std::cout << "Current directory is: " << std::filesystem::current_path() << std::endl;
 
     std::string base_path = "music_db"; // Base name without extension
-    std::string csv_path = "../songs/Chill.csv";
+    std::string csv_path = "../songs/Playlist.csv";
 
     try {
 
@@ -45,7 +45,7 @@ int main() {
         
         // Example search
 
-        std::string song_name = "Xenogenesis";
+        std::string song_name = "Long Drives";
 
         auto vec = db.get_vector_by_song_name(song_name);
         std::cout << "\nFound vector for song \"" << song_name << "\"!\n" << std::endl;

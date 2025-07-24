@@ -1,0 +1,115 @@
+My arbitrary weights
+
+float WEIGHTS[10] = {
+    0.0f, // Popularity
+    0.0f, // BPM
+    0.0f, // Dance
+    1.0f, // Energy
+    1.0f, // Acoustic
+    0.0f, // Instrumental
+    1.0f, // Happy
+    0.0f, // Speech
+    0.0f, // Live
+    0.0f // Loud (Db)
+};
+
+AI Slop
+
+Mood-Based Weighting
+Focus on emotional characteristics
+consistent, but focuses on popularity too much
+float WEIGHTS[10] = {
+    0.5f, // Popularity - some importance for mainstream appeal
+    0.0f, // BPM - ignore tempo
+    0.3f, // Dance - moderate importance
+    0.2f, // Energy - high importance for mood
+    0.1f, // Acoustic - very important for texture
+    0.0f, // Instrumental - ignore
+    0.1f, // Happy - very important for mood
+    0.0f, // Speech - ignore
+    0.0f, // Live - ignore
+    0.4f  // Loud (Db) - moderate importance
+};
+
+Vibe-Based Weighting
+Focus on the "feel" of the song
+Like it better than arbitrary, but kinda wierd
+float WEIGHTS[10] = {
+    0.0f, // Popularity - ignore
+    0.2f, // BPM - important for rhythm matching
+    0.1f, // Dance - very important
+    0.1f, // Energy - very important
+    0.1f, // Acoustic - very important for texture
+    0.3f, // Instrumental - moderate importance
+    0.1f, // Happy - very important
+    0.0f, // Speech - ignore
+    0.0f, // Live - ignore
+    0.2f  // Loud (Db) - important for intensity
+};
+
+Genre-Agnostic Similarity
+Focus on musical characteristics over metadata
+better than my arbitrary
+float WEIGHTS[10] = {
+    0.0f, // Popularity - ignore completely
+    0.15f, // BPM - important for rhythm
+    0.1f,  // Dance - very important
+    0.1f,  // Energy - very important
+    0.05f, // Acoustic - extremely important
+    0.2f,  // Instrumental - moderate importance
+    0.1f,  // Happy - very important
+    0.0f,  // Speech - ignore
+    0.0f,  // Live - ignore
+    0.15f  // Loud (Db) - important
+};
+
+
+Methods to Find Optimal Weights
+1. Grid Search with User Feedback
+Create a simple evaluation system:
+cpp// Test different weight combinations
+std::vector<std::vector<float>> weight_combinations = {
+    {0.0f, 0.2f, 0.1f, 0.1f, 0.1f, 0.3f, 0.1f, 0.0f, 0.0f, 0.2f},
+    {0.0f, 0.1f, 0.1f, 0.2f, 0.05f, 0.2f, 0.1f, 0.0f, 0.0f, 0.25f},
+    // ... more combinations
+};
+
+for (auto& weights : weight_combinations) {
+    // Set weights and test recommendations
+    // Rate the quality of recommendations 1-10
+}
+2. A/B Testing with Known Similar Songs
+Create pairs of songs you know should be similar and test which weights make them closer:
+cppstd::vector<std::pair<std::string, std::string>> similar_pairs = {
+    {"Song A", "Song B"}, // Known to be similar
+    {"Song C", "Song D"},
+    // ...
+};
+
+// Test different weights and see which makes these pairs have smaller distances
+3. Feature Importance Analysis
+Analyze your dataset to understand which features vary most:
+cpp// Calculate standard deviation for each feature across your dataset
+// Features with higher variance might need lower weights
+// Features that are good discriminators might need higher weights (lower weight values)
+
+Implementation Tip
+Add a method to test different weights easily:
+cppvoid test_weights(const std::vector<float>& test_weights, const std::string& test_song) {
+    // Temporarily set weights
+    std::copy(test_weights.begin(), test_weights.end(), WEIGHTS);
+    
+    // Rebuild the database with new weights
+    load_from_csv(csv_path);
+    
+    // Test recommendations for the song
+    auto vec = get_vector_by_song_name(test_song);
+    auto results = search(vec, 10);
+    
+    // Print results for manual evaluation
+    std::cout << "Weights: ";
+    for (float w : test_weights) std::cout << w << " ";
+    std::cout << std::endl;
+    
+    // Print recommended songs...
+}
