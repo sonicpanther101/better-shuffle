@@ -9,11 +9,15 @@ int main() {
     std::string csv_path = "../songs/Playlist.csv";
     db.load_from_csv(csv_path);
 
+    if (trainer.load()) {
+        std::cout << "Weights loaded from file.\n";
+    }
+
     while (true) {
         auto weights = trainer.generate_weights();
         db.test_weights(weights, "Long Drives", csv_path);
 
-        std::cout << "\nScore (1–10, or 0 to exit): ";
+        std::cout << "\nScore (1-10, or 0 to exit): ";
         int score;
         std::cin >> score;
         if (score == 0) break;
@@ -21,6 +25,9 @@ int main() {
         trainer.add_feedback(weights, score);
         trainer.train(); // You can increase epochs later
     }
+
+    std::cout << "\nTraining complete.\n";
+    trainer.save();
 
     return 0;
 }

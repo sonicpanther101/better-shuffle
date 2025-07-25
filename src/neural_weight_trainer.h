@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../vendor/tiny_dnn/tiny_dnn/tiny_dnn.h"
+#include <tiny_dnn/tiny_dnn.h>
 #include <vector>
 #include <utility>
 #include <random>
+#include <filesystem>
 
 class NeuralWeightTrainer {
 private:
@@ -24,13 +25,13 @@ public:
     }
 
     std::vector<float> generate_weights() {
-        tiny_dnn::vec_t input(10, 0.0f); // Dummy input, optionally encode session state
+        tiny_dnn::vec_t input(10, 1.0f); // Dummy input, optionally encode session state
         auto output = net.predict(input);
 
         std::vector<float> weights(output.begin(), output.end());
         // Convert from [-1, 1] to [0.0, 0.3] for example
         for (float& w : weights)
-            w = (w + 1.0f) * 0.15f;
+            w = (w + 1.0f);
 
         return weights;
     }
@@ -46,8 +47,8 @@ public:
         std::vector<vec_t> targets;
 
         for (const auto& [w, score] : history) {
-            vec_t input(10, 0.0f); // dummy
-            vec_t target = w;
+            vec_t input(10, 1.0f); // dummy
+            vec_t target(w.begin(), w.end());
             for (float& val : target) {
                 val = val / 0.15f - 1.0f; // scale back to [-1, 1]
             }
@@ -56,5 +57,15 @@ public:
         }
 
         net.fit<mse>(optimizer, inputs, targets, 1, epochs);
+    }
+
+    void save() {
+        net.save("weights.nn");
+    }
+
+    bool load() {
+        if (!std::filesystem::exists("weights.nn")) return false;
+        net.load("weights.nn");
+        return true;
     }
 };
