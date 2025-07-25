@@ -4,6 +4,7 @@ file = open('songs/Playlist.csv', 'r')
 lines = file.readlines()
 file.close()
 
+removed = []
 storage = []
 
 for line in lines:
@@ -12,16 +13,16 @@ for line in lines:
 
     line = ','.join(test)
 
-    storage.append(line)
+    if line in storage:
+        removed.append(line)
+    else:
+        storage.append(line)
 
+# print difference between the two lists
+print(len(removed))
 
-removed = list(set(storage))
-
-for line in storage:
-    if line not in removed:
-        print(line)
-
-lines = [ str(i) + ',' + line for i, line in enumerate(removed) ]
+lines = [ str(i) + ',' + line for i, line in enumerate(storage) ]
+lines[0] = lines[0].replace("0","#")
 
 file = open('duplicates removed.csv', 'w')
 file.writelines(lines)

@@ -395,6 +395,21 @@ public:
         return average_vector;
     }
 
+    float get_standard_deviation(int dimension) {
+        float sum = 0.0f;
+        float mean = 0.0f;
+        int count = 0;
+        for (size_t i = 0; i < data_buffer.size(); i += dim) {
+            mean += data_buffer[i + dimension];
+            count++;
+        }
+        mean /= count;
+        for (size_t i = 0; i < data_buffer.size(); i += dim) {
+            sum += (data_buffer[i + dimension] - mean) * (data_buffer[i + dimension] - mean);
+        }
+        return std::sqrt(sum / count);
+    }
+
     void test_weights(const std::vector<float>& test_weights, const std::string& test_song, const std::string& csv_path) {
         // Temporarily set weights
         std::copy(test_weights.begin(), test_weights.end(), WEIGHTS);
@@ -409,8 +424,16 @@ public:
         results.pop_back();
         
         // Print results for manual evaluation
-        std::cout << "Weights: ";
-        for (float w : test_weights) std::cout << w << " ";
+        std::cout << "Weights:            ";
+        for (float w : test_weights) std::cout << w << " | ";
+        std::cout << std::endl;
+
+        // Print standard deviation for each dimension
+        std::cout << "Standard Deviation: ";
+        for (size_t i = 0; i < dim; ++i) {
+            // rounded to 3dp
+            std::cout << std::round(get_standard_deviation(i) * 1000.0) / 1000.0 << " | ";
+        }
         std::cout << std::endl;
         
         // Print recommended songs...
